@@ -1,36 +1,1194 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Reidthesloth | Temporarily Offline</title>
-  <style>
-    *{box-sizing:border-box}
-    body{
-      margin:0;min-height:100vh;display:grid;place-items:center;
-      background:radial-gradient(circle at top,#1f2937,#050505 65%);
-      color:#fff;font-family:Arial,Helvetica,sans-serif;
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Reidthesloth Tournament Control | Temporarily Offline</title>
+
+<style>
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+    color: #ffffff;
+    background: #02060d;
+
+    font-family:
+        Inter,
+        Segoe UI,
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+
+/* =========================================================
+   MAIN BACKGROUND
+   ========================================================= */
+
+.maintenance-screen {
+    position: relative;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    isolation: isolate;
+
+    background:
+        radial-gradient(
+            circle at 50% 38%,
+            rgba(12, 79, 170, 0.30) 0%,
+            rgba(6, 37, 84, 0.17) 25%,
+            rgba(2, 10, 23, 0.75) 53%,
+            #02050a 82%
+        );
+}
+
+
+/* =========================================================
+   SUBTLE GRID
+   ========================================================= */
+
+.grid {
+    position: absolute;
+    inset: 0;
+
+    z-index: -8;
+
+    opacity: 0.17;
+
+    background-image:
+        linear-gradient(
+            rgba(54, 137, 255, 0.12) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(54, 137, 255, 0.12) 1px,
+            transparent 1px
+        );
+
+    background-size: 60px 60px;
+
+    mask-image:
+        radial-gradient(
+            circle at center,
+            black,
+            transparent 70%
+        );
+
+    animation: gridMove 24s linear infinite;
+}
+
+@keyframes gridMove {
+    from {
+        background-position: 0 0;
     }
-    .card{max-width:720px;padding:56px 28px;text-align:center}
-    .eyebrow{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#93c5fd}
-    h1{font-size:clamp(38px,8vw,64px);margin:14px 0}
-    p{font-size:18px;line-height:1.6;color:#cbd5e1}
-    .status{display:inline-flex;gap:10px;align-items:center;margin-top:20px;padding:10px 18px;
-      border:1px solid #334155;border-radius:999px;background:#0f172a}
-    .dot{width:10px;height:10px;border-radius:50%;background:#f59e0b;animation:pulse 1.4s infinite}
-    button{margin-top:28px;padding:12px 20px;border:0;border-radius:10px;font-weight:700;cursor:pointer}
-    @keyframes pulse{50%{opacity:.25}}
-  </style>
+
+    to {
+        background-position: 60px 60px;
+    }
+}
+
+
+/* =========================================================
+   LARGE HUD RINGS
+   ========================================================= */
+
+.ring {
+    position: absolute;
+
+    width: min(72vw, 1100px);
+    aspect-ratio: 1;
+
+    border-radius: 50%;
+
+    z-index: -7;
+
+    border: 1px solid rgba(44, 132, 255, 0.10);
+}
+
+.ring::before,
+.ring::after {
+    content: "";
+
+    position: absolute;
+
+    border-radius: inherit;
+
+    inset: 7%;
+
+    border: 1px solid rgba(44, 132, 255, 0.08);
+}
+
+.ring::after {
+    inset: 18%;
+
+    border-color: rgba(44, 132, 255, 0.06);
+}
+
+.ring-one {
+    animation: rotateRing 70s linear infinite;
+}
+
+.ring-two {
+    width: min(58vw, 880px);
+
+    border-style: dashed;
+
+    border-color: rgba(56, 148, 255, 0.09);
+
+    animation: rotateRingReverse 55s linear infinite;
+}
+
+@keyframes rotateRing {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotateRingReverse {
+    from {
+        transform: rotate(360deg);
+    }
+
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+
+/* =========================================================
+   BLUE AMBIENT LIGHT
+   ========================================================= */
+
+.glow {
+    position: absolute;
+
+    border-radius: 50%;
+
+    filter: blur(80px);
+
+    z-index: -6;
+
+    pointer-events: none;
+}
+
+.glow-top {
+    width: 680px;
+    height: 300px;
+
+    top: -110px;
+
+    background: rgba(0, 102, 255, 0.23);
+
+    animation: breathe 7s ease-in-out infinite;
+}
+
+.glow-center {
+    width: 800px;
+    height: 260px;
+
+    top: 38%;
+
+    background: rgba(0, 81, 255, 0.12);
+
+    animation: breathe 9s ease-in-out infinite reverse;
+}
+
+.glow-bottom {
+    width: 700px;
+    height: 80px;
+
+    bottom: 3%;
+
+    background: rgba(0, 111, 255, 0.24);
+
+    filter: blur(45px);
+
+    animation: bottomGlow 5s ease-in-out infinite;
+}
+
+@keyframes breathe {
+    0%,
+    100% {
+        opacity: 0.55;
+        transform: scale(0.95);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.08);
+    }
+}
+
+@keyframes bottomGlow {
+    0%,
+    100% {
+        opacity: 0.35;
+        transform: scaleX(0.8);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: scaleX(1.15);
+    }
+}
+
+
+/* =========================================================
+   SIDE TECH LINES
+   ========================================================= */
+
+.tech-line {
+    position: absolute;
+
+    width: 28vw;
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(48, 137, 255, 0.5),
+            transparent
+        );
+
+    opacity: 0.3;
+
+    z-index: -5;
+}
+
+.tech-line-left {
+    left: 0;
+    top: 48%;
+}
+
+.tech-line-right {
+    right: 0;
+    top: 48%;
+}
+
+
+/* =========================================================
+   PARTICLES
+   ========================================================= */
+
+.particles {
+    position: absolute;
+    inset: 0;
+
+    z-index: -4;
+
+    overflow: hidden;
+
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+
+    width: 2px;
+    height: 2px;
+
+    background: #4499ff;
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 6px rgba(68, 153, 255, 0.8);
+
+    opacity: 0;
+
+    animation:
+        particleFloat var(--speed)
+        linear infinite;
+}
+
+@keyframes particleFloat {
+    0% {
+        transform:
+            translateY(100vh)
+            scale(0.5);
+
+        opacity: 0;
+    }
+
+    15% {
+        opacity: var(--opacity);
+    }
+
+    85% {
+        opacity: var(--opacity);
+    }
+
+    100% {
+        transform:
+            translateY(-10vh)
+            scale(1.2);
+
+        opacity: 0;
+    }
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.content {
+    position: relative;
+
+    width: min(1100px, 90vw);
+
+    text-align: center;
+
+    z-index: 10;
+
+    transform: translateY(-1vh);
+
+    animation: contentEnter 1.2s ease both;
+}
+
+@keyframes contentEnter {
+    from {
+        opacity: 0;
+        transform:
+            translateY(25px)
+            scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateY(-1vh)
+            scale(1);
+    }
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.logo-wrap {
+    display: flex;
+    justify-content: center;
+
+    margin-bottom: 15px;
+}
+
+.logo {
+    width: 54px;
+    height: 54px;
+
+    filter:
+        drop-shadow(0 0 14px rgba(29, 122, 255, 0.55));
+
+    animation: logoPulse 5s ease-in-out infinite;
+}
+
+@keyframes logoPulse {
+    0%,
+    100% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.04);
+    }
+}
+
+
+/* =========================================================
+   BRAND ROW
+   ========================================================= */
+
+.brand-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 22px;
+
+    margin-bottom: 20px;
+}
+
+.brand-line {
+    width: clamp(40px, 7vw, 130px);
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #2d8cff
+        );
+}
+
+.brand-line.right {
+    background:
+        linear-gradient(
+            90deg,
+            #2d8cff,
+            transparent
+        );
+}
+
+.brand {
+    color: #6fb0ff;
+
+    font-size: clamp(11px, 0.9vw, 16px);
+
+    letter-spacing: 0.32em;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    text-shadow:
+        0 0 14px rgba(57, 145, 255, 0.25);
+}
+
+
+/* =========================================================
+   HEADLINE
+   ========================================================= */
+
+h1 {
+    position: relative;
+
+    margin: 0;
+
+    font-size: clamp(55px, 6.4vw, 112px);
+
+    line-height: 0.98;
+
+    letter-spacing: -0.04em;
+
+    font-weight: 800;
+
+    color: #f6f9ff;
+
+    text-shadow:
+        0 0 10px rgba(255,255,255,0.12),
+        0 0 24px rgba(50,140,255,0.15);
+
+    animation: headlineGlow 6s ease-in-out infinite;
+}
+
+@keyframes headlineGlow {
+    0%,
+    100% {
+        text-shadow:
+            0 0 10px rgba(255,255,255,0.10),
+            0 0 20px rgba(50,140,255,0.12);
+    }
+
+    50% {
+        text-shadow:
+            0 0 12px rgba(255,255,255,0.18),
+            0 0 38px rgba(50,140,255,0.28);
+    }
+}
+
+
+/* =========================================================
+   HEADLINE LIGHT
+   ========================================================= */
+
+.headline-light {
+    width: min(530px, 55vw);
+    height: 2px;
+
+    margin:
+        13px auto
+        24px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(32,129,255,0.3),
+            #61b2ff,
+            rgba(32,129,255,0.3),
+            transparent
+        );
+
+    box-shadow:
+        0 0 13px rgba(42, 140, 255, 0.65);
+
+    animation: linePulse 4s ease-in-out infinite;
+}
+
+@keyframes linePulse {
+    0%,
+    100% {
+        opacity: 0.45;
+        transform: scaleX(0.75);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+
+.description {
+    margin:
+        0 auto
+        7px;
+
+    max-width: 720px;
+
+    font-size: clamp(16px, 1.35vw, 23px);
+
+    color: #d1d7e0;
+
+    line-height: 1.5;
+
+    font-weight: 400;
+}
+
+.description.secondary {
+    margin-top: 4px;
+
+    color: #a9b2c0;
+
+    font-size: clamp(14px, 1.1vw, 19px);
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.status {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 11px;
+
+    margin-top: 27px;
+
+    padding:
+        10px
+        20px;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(17, 35, 65, 0.95),
+            rgba(8, 20, 42, 0.95)
+        );
+
+    border:
+        1px solid
+        rgba(67, 142, 255, 0.38);
+
+    box-shadow:
+        inset 0 0 20px rgba(29, 104, 218, 0.07),
+        0 0 28px rgba(24, 92, 200, 0.10);
+
+    color: #eff5ff;
+
+    font-size: clamp(13px, 0.95vw, 17px);
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #ffa412;
+
+    box-shadow:
+        0 0 9px rgba(255, 164, 18, 0.9);
+
+    animation: statusPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+    0%,
+    100% {
+        box-shadow:
+            0 0 5px rgba(255,164,18,0.6);
+
+        opacity: 0.75;
+    }
+
+    50% {
+        box-shadow:
+            0 0 17px rgba(255,164,18,1);
+
+        opacity: 1;
+    }
+}
+
+
+/* =========================================================
+   BUTTON
+   ========================================================= */
+
+.retry-button {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    min-width: 215px;
+
+    margin-top: 24px;
+
+    padding:
+        15px
+        28px;
+
+    appearance: none;
+
+    border:
+        1px solid
+        rgba(67, 161, 255, 0.85);
+
+    border-radius: 8px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(9, 36, 79, 0.85),
+            rgba(4, 19, 45, 0.95)
+        );
+
+    color: #eaf5ff;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.18em;
+
+    cursor: pointer;
+
+    box-shadow:
+        inset 0 0 22px rgba(36, 132, 255, 0.10),
+        0 0 18px rgba(23, 115, 255, 0.12);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.retry-button:hover {
+    transform: translateY(-2px);
+
+    border-color: #70c1ff;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(15, 54, 111, 0.92),
+            rgba(5, 26, 61, 1)
+        );
+
+    box-shadow:
+        inset 0 0 24px rgba(49,145,255,0.16),
+        0 0 30px rgba(33,130,255,0.35);
+}
+
+.retry-button:active {
+    transform: translateY(0);
+}
+
+.refresh-icon {
+    font-size: 19px;
+
+    color: #70c3ff;
+
+    transition: transform 0.4s ease;
+}
+
+.retry-button:hover .refresh-icon {
+    transform: rotate(180deg);
+}
+
+
+/* =========================================================
+   AUTO RETRY MESSAGE
+   ========================================================= */
+
+.retry-info {
+    margin-top: 17px;
+
+    color: rgba(169, 185, 207, 0.55);
+
+    font-size: 11px;
+
+    letter-spacing: 0.08em;
+}
+
+.retry-info span {
+    color: #72b7ff;
+}
+
+
+/* =========================================================
+   BOTTOM FLOOR LIGHT
+   ========================================================= */
+
+.floor {
+    position: absolute;
+
+    left: 50%;
+    bottom: 7%;
+
+    width: min(850px, 70vw);
+    height: 1px;
+
+    transform: translateX(-50%);
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(32,126,255,0.5),
+            #58afff,
+            rgba(32,126,255,0.5),
+            transparent
+        );
+
+    box-shadow:
+        0 0 28px rgba(42,139,255,0.55);
+
+    opacity: 0.55;
+
+    animation: floorPulse 4s ease-in-out infinite;
+}
+
+@keyframes floorPulse {
+    0%,
+    100% {
+        opacity: 0.25;
+        transform:
+            translateX(-50%)
+            scaleX(0.7);
+    }
+
+    50% {
+        opacity: 0.7;
+        transform:
+            translateX(-50%)
+            scaleX(1);
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .brand-row {
+        gap: 10px;
+    }
+
+    .brand {
+        letter-spacing: 0.18em;
+    }
+
+    .brand-line {
+        width: 25px;
+    }
+
+    .content {
+        width: 92vw;
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION ACCESSIBILITY
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
+</style>
 </head>
+
+
 <body>
-  <main class="card">
-    <div class="eyebrow">Reidthesloth Tournament Control</div>
-    <h1>We'll Be Back Shortly</h1>
-    <p>The tournament system is currently unavailable or undergoing maintenance.</p>
-    <p>Please check back shortly. This page will retry automatically.</p>
-    <div class="status"><span class="dot"></span> System Temporarily Offline</div><br>
-    <button onclick="location.reload()">Try Again</button>
-  </main>
-  <script>setTimeout(()=>location.reload(),30000);</script>
+
+<div class="maintenance-screen">
+
+    <!-- Background -->
+    <div class="grid"></div>
+
+    <div class="ring ring-one"></div>
+    <div class="ring ring-two"></div>
+
+    <div class="glow glow-top"></div>
+    <div class="glow glow-center"></div>
+    <div class="glow glow-bottom"></div>
+
+    <div class="tech-line tech-line-left"></div>
+    <div class="tech-line tech-line-right"></div>
+
+    <div class="particles" id="particles"></div>
+
+
+    <!-- Main content -->
+    <main class="content">
+
+        <!-- Simple built-in R logo -->
+        <div class="logo-wrap">
+
+            <svg
+                class="logo"
+                viewBox="0 0 100 100"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+
+                <path
+                    d="
+                        M50 7
+                        L85 27
+                        V68
+                        L50 89
+                        L15 68
+                        V27
+                        Z
+                    "
+                    stroke="#2584ff"
+                    stroke-width="6"
+                />
+
+                <path
+                    d="
+                        M34 68
+                        V32
+                        H56
+                        C69 32 73 48 63 54
+                        L75 68
+                    "
+                    stroke="#2584ff"
+                    stroke-width="7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+
+            </svg>
+
+        </div>
+
+
+        <!-- Brand -->
+        <div class="brand-row">
+
+            <div class="brand-line"></div>
+
+            <div class="brand">
+                REIDTHESLOTH TOURNAMENT CONTROL
+            </div>
+
+            <div class="brand-line right"></div>
+
+        </div>
+
+
+        <!-- Main title -->
+        <h1>
+            We'll Be Back Shortly
+        </h1>
+
+        <div class="headline-light"></div>
+
+
+        <!-- Description -->
+        <p class="description">
+            The tournament system is currently unavailable
+            or undergoing maintenance.
+        </p>
+
+        <p class="description secondary">
+            Please check back shortly. This page will retry automatically.
+        </p>
+
+
+        <!-- Status -->
+        <div class="status">
+
+            <span class="status-dot"></span>
+
+            <span>
+                System Temporarily Offline
+            </span>
+
+        </div>
+
+
+        <br>
+
+
+        <!-- Retry button -->
+        <button
+            class="retry-button"
+            id="retryButton"
+            type="button"
+        >
+
+            <span class="refresh-icon">
+                ↻
+            </span>
+
+            TRY AGAIN
+
+        </button>
+
+
+        <div class="retry-info">
+            Checking server again in
+            <span id="countdown">10</span>s
+        </div>
+
+    </main>
+
+
+    <div class="floor"></div>
+
+</div>
+
+
+<script>
+/* =========================================================
+   PARTICLES
+   ========================================================= */
+
+const particleContainer =
+    document.getElementById("particles");
+
+const PARTICLE_COUNT = 65;
+
+for (
+    let i = 0;
+    i < PARTICLE_COUNT;
+    i++
+) {
+
+    const particle =
+        document.createElement("span");
+
+    particle.className = "particle";
+
+    particle.style.left =
+        `${Math.random() * 100}%`;
+
+    particle.style.top =
+        `${Math.random() * 100}%`;
+
+    particle.style.setProperty(
+        "--speed",
+        `${18 + Math.random() * 28}s`
+    );
+
+    particle.style.setProperty(
+        "--opacity",
+        `${0.12 + Math.random() * 0.40}`
+    );
+
+    particle.style.animationDelay =
+        `${Math.random() * -30}s`;
+
+    const size =
+        1 + Math.random() * 2;
+
+    particle.style.width =
+        `${size}px`;
+
+    particle.style.height =
+        `${size}px`;
+
+    particleContainer.appendChild(
+        particle
+    );
+}
+
+
+/* =========================================================
+   RETRY BUTTON
+   ========================================================= */
+
+document
+    .getElementById("retryButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            window.location.reload();
+
+        }
+    );
+
+
+/* =========================================================
+   AUTOMATIC HUB CHECK
+   ========================================================= */
+
+/*
+    Since this page is being served THROUGH your
+    Cloudflare Worker, requesting the current address
+    checks the Worker again.
+
+    Hub offline:
+        Worker returns 503 maintenance page.
+
+    Hub online:
+        Worker returns your real Tournament Hub.
+
+    When we see a successful response, reload the page.
+*/
+
+const CHECK_INTERVAL = 10;
+
+let secondsRemaining =
+    CHECK_INTERVAL;
+
+const countdown =
+    document.getElementById(
+        "countdown"
+    );
+
+
+async function checkServer() {
+
+    try {
+
+        const separator =
+            window.location.href.includes("?")
+                ? "&"
+                : "?";
+
+        const probeURL =
+            window.location.href +
+            separator +
+            "_healthcheck=" +
+            Date.now();
+
+        const response =
+            await fetch(
+                probeURL,
+                {
+                    method: "GET",
+                    cache: "no-store"
+                }
+            );
+
+
+        /*
+            Your Worker serves this maintenance
+            page as HTTP 503.
+
+            Therefore anything below 500 means
+            the actual site is responding again.
+        */
+
+        if (
+            response.status >= 200 &&
+            response.status < 500
+        ) {
+
+            window.location.reload();
+
+            return;
+        }
+
+    }
+    catch (error) {
+
+        /*
+            Stay on maintenance page.
+            We'll try again automatically.
+        */
+
+    }
+
+
+    secondsRemaining =
+        CHECK_INTERVAL;
+
+}
+
+
+setInterval(
+    () => {
+
+        secondsRemaining--;
+
+        if (
+            secondsRemaining <= 0
+        ) {
+
+            checkServer();
+
+            secondsRemaining =
+                CHECK_INTERVAL;
+
+        }
+
+        countdown.textContent =
+            secondsRemaining;
+
+    },
+    1000
+);
+</script>
+
 </body>
 </html>
